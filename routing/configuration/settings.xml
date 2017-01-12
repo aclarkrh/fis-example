@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/SETTINGS/1.0.0 http://maven.apache.org/xsd/settings-1.0.0.xsd">
+    <mirrors>
+        <mirror>
+            <id>local-mirror-repository</id>
+            <url>http://nexus.ci.svc.cluster.local:8081/content/groups/public/</url>
+            <mirrorOf>*</mirrorOf>
+        </mirror>
+    </mirrors>
+
+    <profiles>
+        <profile>
+            <id>local-artifactory</id>
+            <repositories>
+                <repository>
+                    <id>local-artifactory-repo</id>
+                    <url>http://127.0.0.2:8081/artifactory/libs-release/artifactory-all</url>
+                </repository>
+            </repositories>
+            <pluginRepositories>
+                <pluginRepository>
+                    <id>local-artifactory-repo</id>
+                    <url>http://127.0.0.2:8081/artifactory/libs-release/artifactory-all</url>
+                </pluginRepository>
+            </pluginRepositories>
+        </profile>
+    </profiles>
+
+    <activeProfiles>
+        <activeProfile>local-artifactory</activeProfile>
+    </activeProfiles>
+
+</settings>
