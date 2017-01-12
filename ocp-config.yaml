@@ -52,13 +52,12 @@ objects:
     source:
       git:
         uri: ${GIT}
-      contextDir: ${GIT_CONTEXT}
       type: Git
     strategy:
       sourceStrategy:
         env:
         - name: MAVEN_ARGS_APPEND
-          value: -Dmaven.source.skip=true -Dlicense.skipDownloadLicenses
+          value: -f routing/pom.xml -Dmaven.source.skip=true -Dlicense.skipDownloadLicenses
         from:
           kind: ImageStreamTag
           name: fis-java-openshift:1.0
@@ -139,5 +138,3 @@ parameters:
   value: routing
 - name: GIT
   value: https://github.com/aclarkrh/fis-example.git
-- name: GIT_CONTEXT
-  value: /routing
