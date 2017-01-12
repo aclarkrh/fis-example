@@ -35,6 +35,8 @@
         <osgi-export-package/>
         <osgi-private-package/>
         <osgi-dynamic-package/>
+        
+        <fabric8.version>2.2.0.redhat-079</fabric8.version>
     </properties>
 
     <dependencyManagement>
