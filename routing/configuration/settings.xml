@@ -15,14 +15,14 @@
             <id>local-artifactory</id>
             <repositories>
                 <repository>
-                    <id>local-artifactory-repo</id>
-                    <url>http://127.0.0.2:8081/artifactory/libs-release/artifactory-all</url>
+                    <id>local-nexus-repo</id>
+                    <url>http://nexus.ci.svc.cluster.local:8081/content/groups/public/</url>
                 </repository>
             </repositories>
             <pluginRepositories>
                 <pluginRepository>
-                    <id>local-artifactory-repo</id>
-                    <url>http://127.0.0.2:8081/artifactory/libs-release/artifactory-all</url>
+                    <id>local-nexus-repo</id>
+                    <url>http://nexus.ci.svc.cluster.local:8081/content/groups/public/</url>
                 </pluginRepository>
             </pluginRepositories>
         </profile>
