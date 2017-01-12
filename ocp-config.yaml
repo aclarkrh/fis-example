@@ -3,17 +3,15 @@ apiVersion: v1
 kind: Template
 metadata:
   labels:
-    project: routing
-    version: 1.0
+    app: routing
   name: routing
 objects:
 - apiVersion: v1
   kind: Service
   metadata:
     labels:
-      project: routing
-      version: 1.0
-    name: health
+      app: routing
+    name: routing-soap
   spec:
     ports:
     - port: 9090
@@ -25,9 +23,8 @@ objects:
   kind: Service
   metadata:
     labels:
-      project: routing
-      version: 1.0
-    name: rest
+      app: routing
+    name: routing-rest
   spec:
     ports:
     - port: 9191
@@ -39,15 +36,13 @@ objects:
   kind: ImageStream
   metadata:
     labels:
-      project: routing
-      version: 1.0
+      app: routing
     name: ${APP}
 - apiVersion: v1
   kind: BuildConfig
   metadata:
     labels:
-      project: routing
-      version: 1.0
+      app: routing
     name: ${APP}
   spec:
     output:
@@ -57,6 +52,7 @@ objects:
     source:
       git:
         uri: ${GIT}
+      contextDir: ${GIT_CONTEXT}
       type: Git
     strategy:
       sourceStrategy:
@@ -73,14 +69,13 @@ objects:
     - imageChange:
         from:
           kind: ImageStreamTag
-          name: fis-java-openshift:2.0
+          name: fis-java-openshift:1.0
       type: ImageChange
 - apiVersion: v1
   kind: DeploymentConfig
   metadata:
     labels:
-      project: routing
-      version: 1.0
+      app: routing
     name: ${APP}
   spec:
     replicas: 1
@@ -91,8 +86,7 @@ objects:
     template:
       metadata:
         labels:
-          project: routing
-          version: 1.0
+          app: routing
       spec:
         containers:
         - env:
@@ -144,3 +138,5 @@ parameters:
   value: routing
 - name: GIT
   value: https://github.com/aclarkrh/fis-example.git
+- name: GIT_CONTEXT
+  value: /routing
