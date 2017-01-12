@@ -5,7 +5,7 @@
     <mirrors>
         <mirror>
             <id>local-mirror-repository</id>
-            <url>http://127.0.0.2:8081/artifactory/libs-release/artifactory-all</url>
+            <url>http://127.0.0.2:8081/artifactory/list/artifactory-all/</url>
             <mirrorOf>*</mirrorOf>
         </mirror>
     </mirrors>
@@ -16,13 +16,13 @@
             <repositories>
                 <repository>
                     <id>local-artifactory-repo</id>
-                    <url>http://127.0.0.2:8081/artifactory/libs-release/artifactory-all</url>
+                    <url>http://127.0.0.2:8081/artifactory/list/artifactory-all/</url>
                 </repository>
             </repositories>
             <pluginRepositories>
                 <pluginRepository>
                     <id>local-artifactory-repo</id>
-                    <url>http://127.0.0.2:8081/artifactory/libs-release/artifactory-all</url>
+                    <url>http://127.0.0.2:8081/artifactory/list/artifactory-all/</url>
                 </pluginRepository>
             </pluginRepositories>
         </profile>
