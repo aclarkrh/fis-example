@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:cxf="http://camel.apache.org/schema/cxf"
+    xmlns:osgi="http://www.springframework.org/schema/osgi"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="        http://www.springframework.org/schema/beans        http://www.springframework.org/schema/beans/spring-beans.xsd        http://www.springframework.org/schema/osgi        http://www.springframework.org/schema/osgi/spring-osgi.xsd        http://camel.apache.org/schema/cxf        http://camel.apache.org/schema/cxf/camel-cxf-spring.xsd        http://camel.apache.org/schema/spring        http://camel.apache.org/schema/spring/camel-spring.xsd">
+    <cxf:cxfEndpoint address="http://localhost:9090/ws/customerService"
+        id="customerWebService" loggingFeatureEnabled="true" serviceClass="org.fuse.usecase.service.CustomerWS"/>
+    <cxf:rsServer address="http://localhost:9191/rest"
+        id="customerRestService" loggingFeatureEnabled="false" serviceClass="org.fuse.usecase.service.CustomerRest">
+        <cxf:providers>
+            <ref bean="jsonProvider"/>
+        </cxf:providers>
+    </cxf:rsServer>
+    <cxf:rsClient address="http://localhost:9191/rest"
+        id="customerRestServiceClient" loggingFeatureEnabled="false" serviceClass="org.fuse.usecase.service.CustomerRest">
+        <cxf:providers>
+            <ref bean="jsonProvider"/>
+        </cxf:providers>
+    </cxf:rsClient>
+    <bean class="org.fuse.usecase.service.CustomerWSImpl" id="customerWSImplBean"/>
+    <bean class="org.fuse.usecase.service.CustomerRestImpl" id="customerRestImplBean"/>
+    <camelContext id="camelContext-ca0d38c6-fbc5-42ad-8567-dbec0f0b5fc2"
+        trace="false" xmlns="http://camel.apache.org/schema/spring">
+        <propertyPlaceholder id="properties" location="fabric8/route.properties"/>
+        <route id="CustomerREST">
+            <from id="_from3" uri="cxfrs:bean:customerRestService"/>
+            <bean id="_bean1" method="enrich" ref="customerRestImplBean"/>
+        </route>
+        <route id="CustomerWS">
+            <from id="_from4" uri="cxf:bean:customerWebService"/>
+            <bean id="_bean2" method="updateAccount" ref="customerWSImplBean"/>
+        </route>
+    </camelContext>
+</beans>

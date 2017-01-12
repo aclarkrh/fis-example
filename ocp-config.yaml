@@ -1,0 +1,146 @@
+---
+apiVersion: v1
+kind: Template
+metadata:
+  labels:
+    project: routing
+    version: 1.0
+  name: routing
+objects:
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      project: routing
+      version: 1.0
+    name: health
+  spec:
+    ports:
+    - port: 9090
+      protocol: TCP
+      targetPort: 9090
+    selector:
+      project: routing
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      project: routing
+      version: 1.0
+    name: rest
+  spec:
+    ports:
+    - port: 9191
+      protocol: TCP
+      targetPort: 9191
+    selector:
+      project: routing
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    labels:
+      project: routing
+      version: 1.0
+    name: ${APP}
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    labels:
+      project: routing
+      version: 1.0
+    name: ${APP}
+  spec:
+    output:
+      to:
+        kind: ImageStreamTag
+        name: ${APP}:${IS_TAG}
+    source:
+      git:
+        uri: ${GIT}
+      type: Git
+    strategy:
+      sourceStrategy:
+        env:
+        - name: MAVEN_ARGS_APPEND
+          value: -Dmaven.source.skip=true -Dlicense.skipDownloadLicenses
+        from:
+          kind: ImageStreamTag
+          name: fis-java-openshift:2.0
+        incremental: true
+      type: Source
+    triggers:
+    - type: ConfigChange
+    - imageChange:
+        from:
+          kind: ImageStreamTag
+          name: fis-java-openshift:2.0
+      type: ImageChange
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    labels:
+      project: routing
+      version: 1.0
+    name: ${APP}
+  spec:
+    replicas: 1
+    strategy:
+      rollingParams:
+        timeoutSeconds: 10800
+      type: Rolling
+    template:
+      metadata:
+        labels:
+          project: routing
+          version: 1.0
+      spec:
+        containers:
+        - env:
+          - name: KUBERNETES_NAMESPACE
+            valueFrom:
+              fieldRef:
+                fieldPath: metadata.namespace
+          - name: CONTAINER_CORE_LIMIT
+            valueFrom:
+              resourceFieldRef:
+                resource: limits.cpu
+          - name: CONTAINER_MAX_MEMORY
+            valueFrom:
+              resourceFieldRef:
+                resource: limits.memory
+          - name: JAVA_APP_DIR
+            value: /deployments
+          image: ${APP}:latest
+          imagePullPolicy: IfNotPresent
+          name: ${APP}
+          ports:
+          - containerPort: 9090
+            name: soap
+            protocol: TCP
+          - containerPort: 9191
+            name: rest
+            protocol: TCP
+          resources:
+            limits:
+              memory: 1024Mi
+              cpu: 500m
+            requests:
+              memory: 512Mi
+              cpu: 100m
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - ${APP}
+        from:
+          kind: ImageStreamTag
+          name: ${APP}:latest
+      type: ImageChange
+parameters:
+- name: IS_TAG
+  value: latest
+- name: APP
+  value: routing
+- name: GIT
+  value: https://github.com/aclarkrh/fis-example.git
