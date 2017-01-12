@@ -165,6 +165,7 @@
         </plugins>
     </build>
 
+<!-- 
     <repositories>
         <repository>
             <id>fusesource-public-repository</id>
@@ -219,4 +220,5 @@
             <url>http://maven.repository.redhat.com/techpreview/all</url>
         </pluginRepository>
     </pluginRepositories>
+-->
 </project>
